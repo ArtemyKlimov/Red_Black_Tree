@@ -13,7 +13,13 @@ int main(int argc, char **argv){
 	mytree.insert(28);
 	mytree.insert(31);
 	mytree.insert(2);
-
+	mytree.insert(6);
+	mytree.insert(7);
+	mytree.insert(32);
+	mytree.insert(105);
+	mytree.insert(132);
+	mytree.insert(199);
+	mytree.insert(6);
 	if(argc == 2){
 
 	std::ifstream fin(argv[1]);

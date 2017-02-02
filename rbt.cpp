@@ -12,75 +12,99 @@ node* RBTree::createLeaf(int _key, node*_parent){
 	n->left = nullptr;
 	n->right = nullptr;
 	n->parent=_parent;
-	//if(_parent)
-	//std::cout<<" parent->key = "<<_parent->right->key<<std::endl;
 	return n;	
 }
 
 void RBTree::insert(int _key){
-	insert_private(_key, root);
+	node* n = insert_private(_key, root);
+	validate(n);
+	//tell_truth(n);
 }
+void RBTree::tell_truth(node* n){
+	std::cout<<n->key;
+	if(n->parent){
+		if(n->parent->isRed) std::cout<<"my parent is red - "<<n->parent->key<<std::endl;
+		else std::cout<<"my parent is black - "<<n->parent->key<<std::endl;
+			if(n->parent->parent) {
+			std::cout<<"my dad is: "<<n->parent->parent->key;
+			if(n->parent->parent->isRed) std::cout<<"  is red - "<<std::endl;
+			else std::cout<<" my parent is black - "<<std::endl;
+		}
+	}
+}
+	
 
-void RBTree::insert_private(int _key, node* ptr){
+node* RBTree::insert_private(int _key, node* ptr){
+//	std::cout<<"INSERTION "<<_key<<std::endl;
+	node* n = nullptr;
 	if(ptr == nullptr){
 		root = createLeaf(_key, nullptr);
 		root->isRed =false;
-		std::cout<<"Root isn't red any more"<<std::endl;
-		return;
-	}
-	if(ptr->key > _key){
-		if(ptr->left != nullptr){
-			insert_private(_key, ptr->left);
-		}
-		else{ 
-			ptr->left = createLeaf(_key, ptr);
-			validate(ptr->left);
-		}
+		n = root;
 	}
 	else{
-		if(ptr->right != nullptr){
-			insert_private(_key, ptr->right);
+		if(ptr->key > _key){
+			if(ptr->left != nullptr){
+				n = insert_private(_key, ptr->left);
+			}
+			else{ 
+				ptr->left = createLeaf(_key, ptr);
+				n = ptr->left;
+			}
 		}
-		else {
-			ptr->right = createLeaf(_key, ptr);
-			std::cout<<"entered this"<<std::endl;
-			std::cout<<ptr->right->parent->right->key<<" iiiis"<<std::endl;
-			std::cout<<&ptr->right<<" = "<<&ptr->right->parent->right<<std::endl;
-			validate(ptr);
+		else{
+			if(ptr->right != nullptr){
+				n =insert_private(_key, ptr->right);
+			}
+			else {
+				ptr->right = createLeaf(_key, ptr);
+				n = ptr->right;
+			}
 		}
-	}	
+	}
+	return n;	
 }
 void RBTree::validate(node *ptr){
-	if(ptr == nullptr) return;
 	if(ptr == root) {
-		std::cout<<"isBlack"<<std::endl;
 		root->isRed = false;
 		return;
 	}
 	node *d = ptr->parent->parent;
 	if(d ==nullptr) return; //
 	if((ptr->parent == d->left)&&(ptr->parent->isRed)){
-		if(d->right->isRed) case_one(ptr);
-		if((ptr == ptr->parent->right)&&(!d->right->isRed || d->right == nullptr))
+		if(d->right)
+			if(d->right->isRed){
+				std::cout<<"case 1"<<std::endl;
+				case_one(ptr);
+				return;
+			}
+		if((ptr == ptr->parent->right)&&(d->right == nullptr || !d->right->isRed)){
+			std::cout<<"case 2"<<std::endl;
 			case_two(ptr);
-		if((ptr == ptr->parent->left)&&(!d->right->isRed || d->right ==nullptr))
-			case_tree(ptr);
+			return;
+		}
+		if((ptr == ptr->parent->left)&&(d->right ==nullptr || !d->right->isRed)){
+			std::cout<<"case 3"<<std::endl;
+			case_three(ptr);
+			return;
+		}
 	}
 	else if((ptr->parent == d->right) &&(ptr->parent->isRed)){
-		std::cout<<"case 3-6"<<std::endl;
-		std::cout<<"ptr->key = "<<ptr->key<<" ptr->parent->key = "<<ptr->parent->right->key<<std::endl;
-		std::cout<<&ptr<<" = "<<&ptr->parent->right<<std::endl;
-		if(d->left->isRed){
-			std::cout<<"case 4"<<std::endl;
-			case_four(ptr);
-		}
-		if((ptr == ptr->parent->left)&&(!d->left->isRed || d->left == nullptr)){
-			std::cout<<"case 5"<<std::endl;
-			case_five(ptr);
-		}
-		if((ptr == ptr->parent->right)){//&&(!(d->left->isRed) || d->left == nullptr)){
+		if((ptr == ptr->parent->right)&&(d->left == nullptr || !d->left->isRed)){
 			std::cout<<"case 6"<<std::endl;
 			case_six(ptr);
+			return;
+		}
+		if (d->left)
+			if(d->left->isRed ){
+				std::cout<<"case 4"<<std::endl;
+				case_four(ptr);
+				return;
+			}
+		if((ptr == ptr->parent->left)&&(d->left == nullptr || !d->left->isRed)){
+			std::cout<<"case 5"<<std::endl;
+			case_five(ptr);
+			return;
 		}
 	}
 }
@@ -105,7 +129,7 @@ void RBTree::case_five(node *ptr){
 	case_six(ptr->parent);
 }
 
-void RBTree::case_tree(node *ptr){
+void RBTree::case_three(node *ptr){
 	node *d = ptr->parent->parent;
 	ptr->parent->isRed = false;
 	d->isRed = true;
@@ -114,15 +138,15 @@ void RBTree::case_tree(node *ptr){
 
 void RBTree::case_two(node*ptr){
 	rotate_left(ptr->parent);
-	case_tree(ptr->parent); //??
+	case_three(ptr->left); //??
 }
 
 void RBTree::case_one(node *ptr){
 	node *d = ptr->parent->parent;
-		d->left->isRed = false;
-		d->right->isRed = false;
-		d->isRed = true;
-		validate(d);
+	d->left->isRed = false;
+	d->right->isRed = false;
+	d->isRed = true;
+	validate(d);
 }
 
 void RBTree::show(){
@@ -144,25 +168,34 @@ void RBTree::show_private(node *ptr){
 
 void RBTree::rotate_left(node *ptr){
 	if(ptr !=nullptr){
+		if(ptr == root) root = ptr->right;
 		node *r = ptr->right;
 		if(r == nullptr) return;
-		node *p = ptr->parent;		
-		if(ptr == p->right) p->right = r;
-		else p->left = r;
-		ptr->right = r->left;
+		node *p = ptr->parent;
+		if(p != nullptr){		
+			if(ptr == p->right) p->right = r; 
+			else p->left = r;
+		}
+		r->parent = p;
+		ptr->right = r->left; 
 		if(r->left != nullptr) r->left->parent = ptr;
 		r->left = ptr;
-		ptr->parent = r;		
+		ptr->parent = r;
+		std::cout<<""<<root->key<<std::endl; 
 	}
 }
 
 void RBTree::rotate_right(node *ptr){
 	if(ptr !=nullptr){
+		if(ptr == root) root = ptr->left;
 		node *l =ptr->left;
 		if( l == nullptr) return;
 		node *p =ptr->parent;
-		if(ptr ==p->right) p->right = l;
-		else p->left = l;	
+		if(p != nullptr){
+			if(ptr ==p->right) p->right = l;
+			else p->left = l;
+		}
+		l->parent = p;	
 		ptr->left = l->right;
 		if(l->right !=nullptr) l->right->parent = ptr;
 		l->right = ptr;
