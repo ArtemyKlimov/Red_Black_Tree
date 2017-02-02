@@ -29,7 +29,7 @@ int main(int argc, char **argv){
 	}
 	fin.close();
 	}
-	mytree.show();
+	//mytree.show();
 
 
 

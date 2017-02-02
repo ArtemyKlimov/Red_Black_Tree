@@ -74,35 +74,35 @@ void RBTree::validate(node *ptr){
 	if((ptr->parent == d->left)&&(ptr->parent->isRed)){
 		if(d->right)
 			if(d->right->isRed){
-				std::cout<<"case 1"<<std::endl;
+//				std::cout<<"case 1"<<std::endl;
 				case_one(ptr);
 				return;
 			}
 		if((ptr == ptr->parent->right)&&(d->right == nullptr || !d->right->isRed)){
-			std::cout<<"case 2"<<std::endl;
+//			std::cout<<"case 2"<<std::endl;
 			case_two(ptr);
 			return;
 		}
 		if((ptr == ptr->parent->left)&&(d->right ==nullptr || !d->right->isRed)){
-			std::cout<<"case 3"<<std::endl;
+//			std::cout<<"case 3"<<std::endl;
 			case_three(ptr);
 			return;
 		}
 	}
 	else if((ptr->parent == d->right) &&(ptr->parent->isRed)){
 		if((ptr == ptr->parent->right)&&(d->left == nullptr || !d->left->isRed)){
-			std::cout<<"case 6"<<std::endl;
+//			std::cout<<"case 6"<<std::endl;
 			case_six(ptr);
 			return;
 		}
 		if (d->left)
 			if(d->left->isRed ){
-				std::cout<<"case 4"<<std::endl;
+//				std::cout<<"case 4"<<std::endl;
 				case_four(ptr);
 				return;
 			}
 		if((ptr == ptr->parent->left)&&(d->left == nullptr || !d->left->isRed)){
-			std::cout<<"case 5"<<std::endl;
+//			std::cout<<"case 5"<<std::endl;
 			case_five(ptr);
 			return;
 		}
@@ -118,10 +118,13 @@ void RBTree::case_four(node*ptr){
 }
 
 void RBTree::case_six(node *ptr){
-	node *d = ptr->parent->parent;
-	ptr->parent->isRed =false;
-	d->isRed = true;
-	rotate_left(d);
+	if(ptr->parent != nullptr){
+		ptr->parent->isRed =false;
+		if(ptr->parent->parent != nullptr){
+			ptr->parent->parent->isRed = true;
+			rotate_left(ptr->parent->parent);
+		}
+	}
 }
 
 void RBTree::case_five(node *ptr){
@@ -130,10 +133,13 @@ void RBTree::case_five(node *ptr){
 }
 
 void RBTree::case_three(node *ptr){
-	node *d = ptr->parent->parent;
-	ptr->parent->isRed = false;
-	d->isRed = true;
-	rotate_right(d);
+	if(ptr->parent){
+		ptr->parent->isRed = false;
+		if(ptr->parent->parent){
+			ptr->parent->parent->isRed = true;
+			rotate_right(ptr->parent->parent);
+		}
+	}
 }
 
 void RBTree::case_two(node*ptr){
@@ -181,7 +187,7 @@ void RBTree::rotate_left(node *ptr){
 		if(r->left != nullptr) r->left->parent = ptr;
 		r->left = ptr;
 		ptr->parent = r;
-		std::cout<<""<<root->key<<std::endl; 
+		//std::cout<<root->key<< "is new root"<<std::endl;
 	}
 }
 
@@ -200,6 +206,7 @@ void RBTree::rotate_right(node *ptr){
 		if(l->right !=nullptr) l->right->parent = ptr;
 		l->right = ptr;
 		ptr->parent = l;
+		//std::cout<<root->key<< "is new root"<<std::endl;
 	}
 }
 
@@ -218,8 +225,4 @@ void RBTree::removeptr(node* Ptr){
 		delete Ptr;
 	}
 }
-
-
-
-
 
