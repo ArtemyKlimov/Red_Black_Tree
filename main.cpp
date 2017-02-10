@@ -35,7 +35,8 @@ int main(int argc, char **argv){
 	}
 	fin.close();
 	}
-	
+	if(mytree.isExist(500)) std::cout<<"500 exists"<<std::endl;
+	if(mytree.isExist(200)) std::cout<<"200 exists"<<std::endl;	
 	mytree.show();
 
 

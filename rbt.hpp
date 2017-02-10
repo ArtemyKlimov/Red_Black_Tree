@@ -19,7 +19,7 @@ private:
 	node<T>* root;
 	node<T>* createLeaf(T _key, node<T>* parent);
 	node<T>* insert_private(T _key, node<T>* ptr);
-	void show_private(node<T>* ptr);
+	void show_private(node<T>* ptr) const;
 	void rotate_left(node<T>* ptr);
 	void rotate_right(node<T>* ptr);
 	void remove_ptr(node<T> *ptr);
@@ -32,15 +32,15 @@ private:
 	void case_six(node<T>*ptr);
 	void removeptr(node<T>* ptr);
 	void tell_truth(node<T>* ptr);
-	void printToFile_private(std::ofstream& f, node<T>* ptr);
-	void isExist_private(T _key, node<T>* ptr);	
+	void printToFile_private(std::ofstream& f, node<T>* ptr) const;
+	bool isExist_private(T _key, node<T>* ptr) const;	
 public:
 	RBTree();
 	~RBTree();
 	void insert(T _key);
-	void show();
-	void printToFile(std::ofstream& f);
-	void isExist(T _key);
+	void show() const;
+	void printToFile(std::ofstream& f) const;
+	bool isExist(T _key) const;
 };
 
 #include "rbt.cpp"

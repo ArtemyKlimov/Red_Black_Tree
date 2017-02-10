@@ -166,11 +166,11 @@ void RBTree<T>::case_one(node<T> *ptr){
 }
 
 template <typename T>
-void RBTree<T>::show(){
+void RBTree<T>::show() const{
 	show_private(root);
-}
+} 
 template <typename T>
-void RBTree<T>::show_private(node<T> *ptr){
+void RBTree<T>::show_private(node<T> *ptr) const{
 	if(ptr == nullptr) return;
 	if(ptr->left != nullptr){
 		show_private(ptr->left);
@@ -219,8 +219,30 @@ void RBTree<T>::rotate_right(node<T> *ptr){
 	}
 }
 
+template<typename T>
+bool RBTree<T>::isExist(T _key) const{
+	return (isExist_private(_key, root));
+}
 
-
+template<typename T>
+bool RBTree<T>::isExist_private(T _key, node<T>* ptr) const{
+	if(ptr !=nullptr){
+		if(ptr->key == _key) return true;
+		if(ptr->key > _key){
+			if(ptr->left != nullptr){
+				if(isExist_private(_key, ptr->left)) return true;
+			}
+			else return false;
+		}
+		if(ptr->key < _key){
+			if(ptr->right != nullptr){
+				if(isExist_private(_key,ptr->right)) return true;
+			}
+			else return false;
+		}
+	}
+	return false;
+}
 
 
 
@@ -244,7 +266,7 @@ void RBTree<T>::removeptr(node<T>* Ptr){
 
 
 template<typename T>
-void RBTree<T>::printToFile_private(std::ofstream& f, node<T>* ptr){
+void RBTree<T>::printToFile_private(std::ofstream& f, node<T>* ptr)const{
 	if(ptr != nullptr){
 		if(ptr->left !=nullptr){
 			printToFile_private(f, ptr->left);
@@ -257,7 +279,7 @@ void RBTree<T>::printToFile_private(std::ofstream& f, node<T>* ptr){
 }
 
 template <typename T>
-void RBTree<T>::printToFile(std::ofstream& f){
+void RBTree<T>::printToFile(std::ofstream& f) const{
 	printToFile_private(f, root);
 }
 
