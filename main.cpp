@@ -3,7 +3,7 @@
 #include <fstream>
 
 int main(int argc, char **argv){
-	RBTree mytree;
+	RBTree<int> mytree;
 	mytree.insert(12);
 	mytree.insert(15);
 	mytree.insert(18);
@@ -20,7 +20,7 @@ int main(int argc, char **argv){
 	mytree.insert(132);
 	mytree.insert(199);
 	mytree.insert(6);
-	if(argc == 2){
+	if((argc == 2)||(argc ==3)){
 
 	std::ifstream fin(argv[1]);
 	int number = 0;
@@ -28,8 +28,15 @@ int main(int argc, char **argv){
 		mytree.insert(number);
 	}
 	fin.close();
+	if(argc == 3){
+		std::ofstream fout(argv[2]);
+		mytree.printToFile(fout);
+		fout.close();
 	}
-	//mytree.show();
+	fin.close();
+	}
+	
+	mytree.show();
 
 
 

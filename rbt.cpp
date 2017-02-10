@@ -1,26 +1,30 @@
+#ifndef RBT_CPP
+#define RBT_CPP
 #include <iostream>
 #include "rbt.hpp"
 #include <fstream>
 
-RBTree::RBTree(){
+template<typename T>
+RBTree<T>::RBTree(){
 	root = nullptr;
 }
-
-node* RBTree::createLeaf(int _key, node*_parent){
-	node *n = new node();
+template<typename T>
+node<T>* RBTree<T>::createLeaf(T _key, node<T>*_parent){
+	node<T> *n = new node<T>();
 	n->key = _key;
 	n->left = nullptr;
 	n->right = nullptr;
 	n->parent=_parent;
 	return n;	
 }
-
-void RBTree::insert(int _key){
-	node* n = insert_private(_key, root);
+template<typename T>
+void RBTree<T>::insert(T _key){
+	node<T>* n = insert_private(_key, root);
 	validate(n);
 	//tell_truth(n);
 }
-void RBTree::tell_truth(node* n){
+template<typename T>
+void RBTree<T>::tell_truth(node<T>* n){
 	std::cout<<n->key;
 	if(n->parent){
 		if(n->parent->isRed) std::cout<<"my parent is red - "<<n->parent->key<<std::endl;
@@ -33,10 +37,10 @@ void RBTree::tell_truth(node* n){
 	}
 }
 	
-
-node* RBTree::insert_private(int _key, node* ptr){
+template<typename T>
+node<T>* RBTree<T>::insert_private(T _key, node<T>* ptr){
 //	std::cout<<"INSERTION "<<_key<<std::endl;
-	node* n = nullptr;
+	node<T>* n = nullptr;
 	if(ptr == nullptr){
 		root = createLeaf(_key, nullptr);
 		root->isRed =false;
@@ -64,12 +68,13 @@ node* RBTree::insert_private(int _key, node* ptr){
 	}
 	return n;	
 }
-void RBTree::validate(node *ptr){
+template<typename T>
+void RBTree<T>::validate(node<T> *ptr){
 	if(ptr == root) {
 		root->isRed = false;
 		return;
 	}
-	node *d = ptr->parent->parent;
+	node<T> *d = ptr->parent->parent;
 	if(d ==nullptr) return; //
 	if((ptr->parent == d->left)&&(ptr->parent->isRed)){
 		if(d->right)
@@ -108,16 +113,17 @@ void RBTree::validate(node *ptr){
 		}
 	}
 }
-
-void RBTree::case_four(node*ptr){
-	node *d = ptr->parent->parent;
+template<typename T>
+void RBTree<T>::case_four(node<T> *ptr){
+	node<T> *d = ptr->parent->parent;
 	d->right->isRed = false;
 	d->left->isRed = false;
 	d->isRed = true;
 	validate(d);
 }
 
-void RBTree::case_six(node *ptr){
+template<typename T>
+void RBTree<T>::case_six(node<T> *ptr){
 	if(ptr->parent != nullptr){
 		ptr->parent->isRed =false;
 		if(ptr->parent->parent != nullptr){
@@ -127,12 +133,14 @@ void RBTree::case_six(node *ptr){
 	}
 }
 
-void RBTree::case_five(node *ptr){
+template<typename T>
+void RBTree<T>::case_five(node<T> *ptr){
 	rotate_right(ptr->parent);
 	case_six(ptr->parent);
 }
 
-void RBTree::case_three(node *ptr){
+template<typename T>
+void RBTree<T>::case_three(node<T> *ptr){
 	if(ptr->parent){
 		ptr->parent->isRed = false;
 		if(ptr->parent->parent){
@@ -142,24 +150,27 @@ void RBTree::case_three(node *ptr){
 	}
 }
 
-void RBTree::case_two(node*ptr){
+template<typename T>
+void RBTree<T>::case_two(node<T> *ptr){
 	rotate_left(ptr->parent);
-	case_three(ptr->left); //??
+	case_three(ptr->left); 
 }
 
-void RBTree::case_one(node *ptr){
-	node *d = ptr->parent->parent;
+template<typename T>
+void RBTree<T>::case_one(node<T> *ptr){
+	node<T> *d = ptr->parent->parent;
 	d->left->isRed = false;
 	d->right->isRed = false;
 	d->isRed = true;
 	validate(d);
 }
 
-void RBTree::show(){
+template <typename T>
+void RBTree<T>::show(){
 	show_private(root);
 }
-
-void RBTree::show_private(node *ptr){
+template <typename T>
+void RBTree<T>::show_private(node<T> *ptr){
 	if(ptr == nullptr) return;
 	if(ptr->left != nullptr){
 		show_private(ptr->left);
@@ -171,13 +182,13 @@ void RBTree::show_private(node *ptr){
 }
 
 
-
-void RBTree::rotate_left(node *ptr){
+template <typename T>
+void RBTree<T>::rotate_left(node<T> *ptr){
 	if(ptr !=nullptr){
 		if(ptr == root) root = ptr->right;
-		node *r = ptr->right;
+		node<T> *r = ptr->right;
 		if(r == nullptr) return;
-		node *p = ptr->parent;
+		node<T> *p = ptr->parent;
 		if(p != nullptr){		
 			if(ptr == p->right) p->right = r; 
 			else p->left = r;
@@ -187,16 +198,15 @@ void RBTree::rotate_left(node *ptr){
 		if(r->left != nullptr) r->left->parent = ptr;
 		r->left = ptr;
 		ptr->parent = r;
-		//std::cout<<root->key<< "is new root"<<std::endl;
 	}
 }
-
-void RBTree::rotate_right(node *ptr){
+template <typename T>
+void RBTree<T>::rotate_right(node<T> *ptr){
 	if(ptr !=nullptr){
 		if(ptr == root) root = ptr->left;
-		node *l =ptr->left;
+		node<T> *l =ptr->left;
 		if( l == nullptr) return;
-		node *p =ptr->parent;
+		node<T> *p =ptr->parent;
 		if(p != nullptr){
 			if(ptr ==p->right) p->right = l;
 			else p->left = l;
@@ -206,15 +216,21 @@ void RBTree::rotate_right(node *ptr){
 		if(l->right !=nullptr) l->right->parent = ptr;
 		l->right = ptr;
 		ptr->parent = l;
-		//std::cout<<root->key<< "is new root"<<std::endl;
 	}
 }
 
-RBTree::~RBTree(){
+
+
+
+
+
+template <typename T>
+RBTree<T>::~RBTree(){
 	removeptr(root);
 }
 
-void RBTree::removeptr(node* Ptr){
+template <typename T>
+void RBTree<T>::removeptr(node<T>* Ptr){
 	if(Ptr != nullptr){
 		if(Ptr->left != nullptr){
 			removeptr(Ptr->left);
@@ -226,3 +242,25 @@ void RBTree::removeptr(node* Ptr){
 	}
 }
 
+
+template<typename T>
+void RBTree<T>::printToFile_private(std::ofstream& f, node<T>* ptr){
+	if(ptr != nullptr){
+		if(ptr->left !=nullptr){
+			printToFile_private(f, ptr->left);
+		}
+		f<<ptr->key<<" ";	
+		if(ptr->right !=nullptr){
+			printToFile_private(f, ptr->right);
+		}
+	}
+}
+
+template <typename T>
+void RBTree<T>::printToFile(std::ofstream& f){
+	printToFile_private(f, root);
+}
+
+
+
+#endif

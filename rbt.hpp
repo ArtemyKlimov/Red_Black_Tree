@@ -2,45 +2,48 @@
 #define BST_HPP
 #include <fstream>
 
-typedef struct node{
-	int key ;
-	node *left;
-	node *right;
-	node *parent;
+template<typename T>
+struct node{
+	T key ;
+	node<T> *left;
+	node<T> *right;
+	node<T> *parent;
 	bool isRed;
 	node(): isRed(true){} 
 
-}node;
+};
 
-
+template<typename T>
 class RBTree{
 private:
-	node* root;
-	node* createLeaf(int _key, node* parent);
-	node* insert_private(int _key, node* ptr);
-	void show_private(node* ptr);
-	void rotate_left(node* ptr);
-	void rotate_right(node* ptr);
-	void remove_ptr(node *ptr);
-	void validate(node *ptr);
-	void case_one(node *ptr);
-	void case_two(node *ptr);
-	void case_three(node *ptr);
-	void case_four(node *ptr);
-	void case_five(node *ptr);
-	void case_six(node*ptr);
-	void removeptr(node* ptr);
-	void tell_truth(node* ptr);	
+	node<T>* root;
+	node<T>* createLeaf(T _key, node<T>* parent);
+	node<T>* insert_private(T _key, node<T>* ptr);
+	void show_private(node<T>* ptr);
+	void rotate_left(node<T>* ptr);
+	void rotate_right(node<T>* ptr);
+	void remove_ptr(node<T> *ptr);
+	void validate(node<T> *ptr);
+	void case_one(node<T> *ptr);
+	void case_two(node<T> *ptr);
+	void case_three(node<T> *ptr);
+	void case_four(node<T> *ptr);
+	void case_five(node<T> *ptr);
+	void case_six(node<T>*ptr);
+	void removeptr(node<T>* ptr);
+	void tell_truth(node<T>* ptr);
+	void printToFile_private(std::ofstream& f, node<T>* ptr);
+	void isExist_private(T _key, node<T>* ptr);	
 public:
 	RBTree();
 	~RBTree();
-	void insert(int _key);
+	void insert(T _key);
 	void show();
-	
-
+	void printToFile(std::ofstream& f);
+	void isExist(T _key);
 };
 
-
+#include "rbt.cpp"
 #endif
 
 
