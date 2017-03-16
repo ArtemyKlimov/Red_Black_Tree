@@ -23,6 +23,8 @@ void RBTree<T>::insert(T _key){
 	validate(n);
 	//tell_truth(n);
 }
+
+//this method was added just to be sure, that the node was placed right
 template<typename T>
 void RBTree<T>::tell_truth(node<T>* n){
 	std::cout<<n->key;
@@ -39,7 +41,6 @@ void RBTree<T>::tell_truth(node<T>* n){
 	
 template<typename T>
 node<T>* RBTree<T>::insert_private(T _key, node<T>* ptr){
-//	std::cout<<"INSERTION "<<_key<<std::endl;
 	node<T>* n = nullptr;
 	if(ptr == nullptr){
 		root = createLeaf(_key, nullptr);
@@ -79,35 +80,29 @@ void RBTree<T>::validate(node<T> *ptr){
 	if((ptr->parent == d->left)&&(ptr->parent->isRed)){
 		if(d->right)
 			if(d->right->isRed){
-//				std::cout<<"case 1"<<std::endl;
 				case_one(ptr);
 				return;
 			}
 		if((ptr == ptr->parent->right)&&(d->right == nullptr || !d->right->isRed)){
-//			std::cout<<"case 2"<<std::endl;
 			case_two(ptr);
 			return;
 		}
 		if((ptr == ptr->parent->left)&&(d->right ==nullptr || !d->right->isRed)){
-//			std::cout<<"case 3"<<std::endl;
 			case_three(ptr);
 			return;
 		}
 	}
 	else if((ptr->parent == d->right) &&(ptr->parent->isRed)){
 		if((ptr == ptr->parent->right)&&(d->left == nullptr || !d->left->isRed)){
-//			std::cout<<"case 6"<<std::endl;
 			case_six(ptr);
 			return;
 		}
 		if (d->left)
 			if(d->left->isRed ){
-//				std::cout<<"case 4"<<std::endl;
 				case_four(ptr);
 				return;
 			}
 		if((ptr == ptr->parent->left)&&(d->left == nullptr || !d->left->isRed)){
-//			std::cout<<"case 5"<<std::endl;
 			case_five(ptr);
 			return;
 		}
@@ -181,7 +176,6 @@ void RBTree<T>::show_private(node<T> *ptr) const{
 	}
 }
 
-
 template <typename T>
 void RBTree<T>::rotate_left(node<T> *ptr){
 	if(ptr !=nullptr){
@@ -243,8 +237,6 @@ bool RBTree<T>::isExist_private(T _key, node<T>* ptr) const{
 	}
 	return false;
 }
-
-
 
 template <typename T>
 RBTree<T>::~RBTree(){
